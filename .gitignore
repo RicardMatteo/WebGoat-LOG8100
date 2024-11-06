@@ -57,3 +57,6 @@ TestClass.class
 /.gitconfig
 
 webgoat.gitconfig
+
+/terraform/*
+!/terraform/main.tf
