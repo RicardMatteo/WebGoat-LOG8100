@@ -64,9 +64,11 @@ echo "$(terraform output kube_config)" > ~/.kube/config
 Utilisez les fichiers de configuration YAML fournis pour déployer l'application WebGoat :
 
 ```bash
-kubectl apply -f ../k8s/deployment.yaml
-kubectl apply -f ../k8s/service.yaml
+kubectl apply -f ../k8s/deployment.yml
+kubectl apply -f ../k8s/service.yml
 ```
+
+Si vous obtenez une erreur de type refus de connexion par échec de validation, vérifiez que minikube ou tout autre cluster custom de kubernetes est bien lancé. 
 
 #### b. Vérifiez le Service
 Vérifiez l'adresse IP externe du service WebGoat avec la commande suivante :
@@ -83,12 +85,26 @@ http://<EXTERNAL-IP>:8080
 
 Remplacez `<EXTERNAL-IP>` par l'IP externe obtenue.
 
+Si vous utilisez minikube et que dans la colonne EXTERNAL-IP pour le service associé à l'application, vous retrouvez `<pending>`, ouvrez un nouveau terminal depuis votre répertoire courant et faites la commande suivante : 
+
+```bash
+minikube tunnel
+```
+
+Cette commande sera au premier plan de ce nouveau terminal, cela vous indiquera dans un premier temps le status de la machine et continuera de tourner sans rien n'afficher ensuite. Lorsque vous arrêterez ce terminal, vous n'aurez plus accès à votre application au port externe qu'elle fournit.
+
+Ainsi dans votre premier répertoire, ré-exécutez la commande suivante :
+
+```bash
+kubectl get service
+```
+
 ### 5. Accéder à WebGoat
 
 Ouvrez un navigateur et allez à l'adresse :
 
 ```
-http://<EXTERNAL-IP>:8080
+http://<EXTERNAL-IP>:8080/WebGoat
 ```
 
 Vous devriez voir l'interface de WebGoat.
@@ -106,8 +122,8 @@ Confirmez en tapant "yes" lorsque demandé.
 ## Structure des Fichiers
 
 - **`main.tf`** : Décrit l'infrastructure Azure pour le cluster Kubernetes.
-- **`deployment.yaml`** : Fichier de configuration pour le déploiement de WebGoat sur Kubernetes.
-- **`service.yaml`** : Fichier de configuration pour le service exposant WebGoat.
+- **`deployment.yml`** : Fichier de configuration pour le déploiement de WebGoat sur Kubernetes.
+- **`service.yml`** : Fichier de configuration pour le service exposant WebGoat.
 
 ## Remarques
 

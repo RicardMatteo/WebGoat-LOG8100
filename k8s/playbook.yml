@@ -1,0 +1,108 @@
+---
+- name: Deploy Postgres and Webgoat applications to Kubernetes
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    # Create the webgoat namespace if not already created
+    - name: Ensure webgoat namespace exists
+      kubernetes.core.k8s:
+        name: webgoat
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    # Create the Postgres Deployment
+    - name: Create Postgres Deployment
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: postgres-deployment
+            namespace: webgoat
+          spec:
+            replicas: 2
+            selector:
+              matchLabels:
+                app: postgres
+            template:
+              metadata:
+                labels:
+                  app: postgres
+              spec:
+                containers:
+                  - name: postgres
+                    image: postgres:latest
+                    ports:
+                      - containerPort: 5432
+                    env:
+                    - name: POSTGRES_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: postgres-secret
+                          key: POSTGRES_PASSWORD
+
+    # Create a Postgres Service
+    - name: Expose Postgres Service
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: postgres-service
+            namespace: webgoat
+          spec:
+            selector:
+              app: postgres
+            ports:
+              - protocol: TCP
+                port: 5432
+                targetPort: 5432
+            type: ClusterIP
+
+    # Create the Webgoat Deployment
+    - name: Create Webgoat Deployment
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: webgoat-deployment
+            namespace: webgoat
+          spec:
+            replicas: 2
+            selector:
+              matchLabels:
+                app: webgoat
+            template:
+              metadata:
+                labels:
+                  app: webgoat
+              spec:
+                containers:
+                  - name: webgoat
+                    image: webgoat/webgoat:latest
+                    ports:
+                      - containerPort: 8080
+
+    # Create a Webgoat Service
+    - name: Expose Webgoat Service
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: webgoat-service
+            namespace: webgoat
+          spec:
+            selector:
+              app: webgoat
+            ports:
+              - protocol: TCP
+                port: 8080
+                targetPort: 8080
+            type: LoadBalancer

@@ -58,5 +58,7 @@ TestClass.class
 
 webgoat.gitconfig
 
-/terraform/*
-!/terraform/main.tf
+/terraform/.terraform/*
+/terraform/.terraform.lock.hcl
+/.env
+/venv/*
