@@ -57,7 +57,8 @@
             selector:
               app: postgres
             ports:
-              - protocol: TCP
+              - name : postgres-service-port
+                protocol: TCP
                 port: 5432
                 targetPort: 5432
             type: ClusterIP
@@ -87,6 +88,14 @@
                     image: webgoat/webgoat:latest
                     ports:
                       - containerPort: 8080
+                  - name: prometheus-sidecar
+                    image: prom/prometheus:latest
+                    ports:
+                      - containerPort: 8081
+                    args:
+                      - "--web.listen-address=:8081"
+                      - "--prometheus.path=/actuator/prometheus"
+                      - "--prometheus.target=webgoat-service:8080"
 
     # Create a Webgoat Service
     - name: Expose Webgoat Service
@@ -102,7 +111,30 @@
             selector:
               app: webgoat
             ports:
-              - protocol: TCP
+              - name: webgoat-service-port
+                protocol: TCP
                 port: 8080
                 targetPort: 8080
             type: LoadBalancer
+    
+    # Create a Service Monitor for Webgoat in Prometheus
+    - name: Create Service Monitor for Webgoat
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: monitoring.coreos.com/v1
+          kind: ServiceMonitor
+          metadata:
+            name: webgoat-service-monitor
+            namespace: webgoat
+          spec:
+            selector:
+              matchLabels:
+                app: webgoat
+            ports:
+              - name: prometheus-metrics
+                port: 8081
+            type: ClusterIP
+            endpoints:
+              - targetPort: 8081
+              

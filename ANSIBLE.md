@@ -54,7 +54,15 @@ Avant de commencer, lancez Minikube (ou tout autre outil de gestion de cluster K
 minikube start
 ```
 
-### 2.7 Prérequis pour la base de données (à effectuer après avoir lancé votre outil de gestion de cluster Kubernetes)
+### 2.7 Création du namespace (nécessaire pour définir l'accès à la base de données)
+
+Créez un namespace pour votre application WebGoat en utilisant la commande suivante :
+
+```bash
+kubectl create namespace webgoat
+```
+
+### 2.8 Prérequis pour la base de données (à effectuer après avoir lancé votre outil de gestion de cluster Kubernetes)
 
 Dans les fichiers de configuration YAML, vous devez spécifier le mot de passe et le port de votre base de données PostgreSQL. Pour plus de sécurité, évitez d'utiliser des chaînes de caractères en clair dans les fichiers YAML. Vous pouvez enregistrer votre mot de passe dans Kubernetes via la commande suivante :
 
