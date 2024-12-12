@@ -1,5 +1,6 @@
 - name: Deploy WebGoat to AKS
   hosts: localhost
+  connection: local
   tasks:
     #- name: Set kubeconfig
     #  shell: az aks get-credentials --resource-group aks-resource-group --name webgoat-aks-cluster
@@ -40,19 +41,19 @@
             tls.key: "{{ lookup('file', '/tmp/webgoat.key') | b64encode }}"
 
 
-    - name: Install Cert-Manager
-      command: >
-        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
-   
-    - name: Apply ClusterIssuer
-      kubernetes.core.k8s:
-        state: present
-        definition: "{{ lookup('file', '../k8s/cluster-issuer.yml') }}"
-    
-    - name: Apply Certificate
-      kubernetes.core.k8s:
-        state: present
-        definition: "{{ lookup('file', '../k8s/certificate.yml') }}"
+    # - name: Install Cert-Manager
+    #   command: >
+    #     kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+    #
+    # - name: Apply ClusterIssuer
+    #   kubernetes.core.k8s:
+    #     state: present
+    #     definition: "{{ lookup('file', '../k8s/cluster-issuer.yml') }}"
+    # 
+    # - name: Apply Certificate
+    #   kubernetes.core.k8s:
+    #     state: present
+    #     definition: "{{ lookup('file', '../k8s/certificate.yml') }}"
 
     - name: Apply RBAC configuration
       kubernetes.core.k8s:
