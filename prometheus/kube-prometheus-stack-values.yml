@@ -6,6 +6,11 @@ prometheus:
     scrapeInterval: 15s  
     evaluationInterval: 15s 
 
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets: ['alertmanager.monitoring.svc.cluster.local:9093']
+
     scrape_configs:
       - job_name: 'webgoat'
         kubernetes_sd_configs:
@@ -47,6 +52,10 @@ prometheus:
           format: ['prometheus']
         static_configs:
           - targets: ['kube-state-metrics.monitoring.svc.cluster.local:8080']
+
+      - job_name: 'alertmanager'
+        static_configs:
+          - targets: ['alertmanager.monitoring.svc.cluster.local:9093']
 
 grafana:
   service:
