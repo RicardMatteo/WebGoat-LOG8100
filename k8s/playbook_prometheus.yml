@@ -1,0 +1,28 @@
+---
+- name: Deploy Prometheus and Grafana using Helm
+  hosts: localhost
+  tasks:
+    - name: Ensure monitoring namespace exists
+      kubernetes.core.k8s:
+        name: monitoring
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Install Prometheus with custom configuration
+      community.kubernetes.helm:
+        name: prometheus
+        namespace: monitoring
+        values_files:
+          - ../prometheus/kube-prometheus-stack-values.yml
+        state: present
+        chart_ref: prometheus-community/kube-prometheus-stack
+
+    - name: Install Grafana with custom configuration
+      community.kubernetes.helm:
+        name: grafana
+        namespace: monitoring
+        values_files:
+          - ../prometheus/kube-prometheus-stack-values.yml
+        state: present
+        chart_ref: prometheus-community/kube-prometheus-stack

@@ -10,31 +10,50 @@
    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
    helm repo update
     ```
+
+Note : pour faire ces prérequis automatiquement depuis un script bash, vous pouvez exécuter le script `setup.sh` :
+   ```bash
+   chmod +x setup.sh
+   ./setup_prometheus.sh
+   ```
+ou ajouter ces commandes dans le playbook ansible avec les instructions shell et command.
+   ```yaml
+   - name: Install Helm on a linux machine 
+   shell: |
+      curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+      sudo apt-get install apt-transport-https --yes
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+      sudo apt-get update
+      sudo apt-get install helm
+   - name: Add Prometheus Helm repository
+   command: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+   - name: Update Helm repositories
+      command: helm repo update
+   ```
+
 3. **Démarrer Minikube (si vous utilisez Minikube comme cluster local)** :
    ```bash
    minikube start
    ```
 
+4. **Démarrer le tunnel Minikube** :
+   ```bash
+    minikube tunnel
+   ```
+
+
 ## Installation de Prometheus et Grafana avec Helm
 
 1. **Installer le stack Kube-Prometheus** :
-Utilisez le fichier de configuration fourni `kube-prometheus-stack-values.yml` pour installer le stack Kube-Prometheus :
+Utilisez le playbook Ansible pour installer le stack Kube-Prometheus avec les configurations personnalisées du fichier `prometheus/kube-prometheus-stack-values.yml`.
    ```bash
-   helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
-     --namespace monitoring \
-     --create-namespace \
-     --values kube-prometheus-stack-values.yml
+   ansible-playbook playbook_prometheus.yml -e "ansible_python_interpreter=../venv/bin/python"
    ```
 
 2. **Déployer l'application Webgoat à l'aide du playbook Ansible** :
   Suivre les instructions du ANSIBLE.md pour déployer l'application Webgoat dans le namespace `webgoat`.
 
-3. **Démarrer le tunnel Minikube** :
-   ```bash
-    minikube tunnel
-   ```
-
-4. **Vérifier que les ressources ont été déployées** :
+3. **Vérifier que les ressources ont été déployées** :
    ```bash
    kubectl get pods -n monitoring
    kubectl get svc -n monitoring
