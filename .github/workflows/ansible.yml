@@ -25,7 +25,7 @@ jobs:
     - name: Install Ansible and dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install ansible kubernetes
+        python3 -m pip install kubernetes ansible[kubernetes]
 
     # 3. Decode and set up kubeconfig
     - name: Set up kubeconfig
