@@ -29,12 +29,19 @@ jobs:
         python3 -m pip list
         python3 -m pip show kubernetes ansible
 
-    # 3. Decode and set up kubeconfig
     - name: Set up kubeconfig
+      env:
+        KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG_BASE64 }}
       run: |
-        echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > ./kubeconfig
-        export KUBECONFIG=./kubeconfig
+        mkdir -p ~/.kube
+        echo $KUBECONFIG_BASE64 | base64 -d > ~/.kube/config
+        export KUBECONFIG=~/.kube/config
         kubectl get nodes
+
+    - name: Debug kubeconfig
+      run: cat ~/.kube/config
+
+
 
     # 4. Deploy with Ansible
     - name: Run Ansible Playbook
