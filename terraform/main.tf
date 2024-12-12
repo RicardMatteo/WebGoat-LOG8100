@@ -1,35 +1,41 @@
-# Fournisseur Azure
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
+  subscription_id = "14fb5d2a-d6a8-4b30-b7e0-b8df1ba0de84"
 }
 
-# Ressource de groupe de ressources Azure
-resource "azurerm_resource_group" "k8s_rg" {
-  name     = "example-k8s-rg"
-  location = "East US"  # Remplacez par votre région préférée
+resource "azurerm_resource_group" "rg" {
+  name     = "LOG8100"
+  location = "East US"
 }
 
-# Cluster AKS
-resource "azurerm_kubernetes_cluster" "k8s_cluster" {
-  name                = "example-k8s-cluster"
-  location            = azurerm_resource_group.k8s_rg.location
-  resource_group_name = azurerm_resource_group.k8s_rg.name
-  dns_prefix          = "example-k8s"
+resource "azurerm_kubernetes_cluster" "aks_cluster" {
+  name                = "webgoat-aks-cluster"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  dns_prefix          = "webgoat-aks"
 
   default_node_pool {
     name       = "default"
-    node_count = 1
+    node_count = 3
     vm_size    = "standard_b2ps_v2"
   }
 
   identity {
     type = "SystemAssigned"
   }
+
+  network_profile {
+    network_plugin    = "azure"
+    network_policy    = "calico"
+    outbound_type     = "loadBalancer"
+  }
 }
 
-# Sortie pour obtenir l'information de connexion
 output "kube_config" {
-  value     = azurerm_kubernetes_cluster.k8s_cluster.kube_config_raw
+  value = azurerm_kubernetes_cluster.aks_cluster.kube_config_raw
   sensitive = true
 }
-

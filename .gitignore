@@ -59,4 +59,7 @@ TestClass.class
 webgoat.gitconfig
 
 /terraform/*
-!/terraform/main.tf
+!/terraform/*.tf
+!/terraform/*.yml
+!/terraform/*.tfvars
+*old

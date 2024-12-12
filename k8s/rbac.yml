@@ -1,0 +1,27 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: webgoat-namespace
+  name: webgoat-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: webgoat-rolebinding
+  namespace: webgoat-namespace
+subjects:
+- kind: ServiceAccount
+  name: webgoat-sa
+  namespace: webgoat-namespace
+roleRef:
+  kind: Role
+  name: webgoat-role
+  apiGroup: rbac.authorization.k8s.io
