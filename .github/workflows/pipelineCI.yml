@@ -13,12 +13,15 @@ jobs:
         
     call_docker_scout:
       uses: ./.github/workflows/docker_scout.yml
+      secrets: inherit
 
     call_discort-alert:
       uses: ./.github/workflows/discort-alert.yml
+      secrets: inherit
 
     call_snyk:
       uses: ./.github/workflows/snyk.yml
+      secrets: inherit
 
     call_zap:
       uses: ./.github/workflows/zap.yml
