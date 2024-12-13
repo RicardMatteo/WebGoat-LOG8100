@@ -3,9 +3,6 @@ name: Deploy WebGoat to AKS
 on:
   workflow_dispatch:
   workflow_call:
-  push:
-    branches:
-      - features/terraform-k8s
 
 jobs:
   deploy:

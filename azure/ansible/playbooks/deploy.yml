@@ -1,0 +1,8 @@
+- name: Deploy Kubernetes Infrastructure
+  hosts: localhost
+  tasks:
+    - name: Deploy Application Namespace and Resources
+      include_tasks: setup_application.yml
+
+    - name: Deploy Monitoring Namespace and Resources
+      include_tasks: setup_monitoring.yml

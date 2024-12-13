@@ -1,0 +1,27 @@
+- name: Create application namespace
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ webgoat.namespace }}"
+    kubeconfig: "{{ kubeconfig_path }}"
+
+
+- name: Apply WebGoat Service
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('file', '../templates/webgoat_service.yml') }}"
+    namespace: webgoat
+
+- name: Deploy WebGoat application
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', '../templates/webgoat_deployment.yml') }}"
+    kubeconfig: "{{ kubeconfig_path }}"
+
+- name: Deploy PostgreSQL database
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', '../templates/postgres_deployment.yml') }}"
+    kubeconfig: "{{ kubeconfig_path }}"
