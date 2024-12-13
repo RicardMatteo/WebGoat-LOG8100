@@ -1,0 +1,24 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - feature/pipline
+  workflow_dispatch:
+
+jobs:
+    call_trivy:
+        uses: ./.github/workflows/trivy.yml
+        
+    call_docker_scout:
+      uses: ./.github/workflows/docker_scout.yml
+
+    call_discord_alert:
+      uses: ./.github/workflows/discord-alert.yml
+
+    call_snyk:
+      uses: ./.github/workflows/snyk.yml
+
+    call_zap:
+      uses: ./.github/workflows/zap.yml
