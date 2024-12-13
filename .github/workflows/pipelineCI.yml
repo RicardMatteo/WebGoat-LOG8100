@@ -14,6 +14,9 @@ jobs:
     call_docker_scout:
       uses: ./.github/workflows/docker_scout.yml
 
+    call_discort-alert:
+      uses: ./.github/workflows/discort-alert.yml
+
     call_snyk:
       uses: ./.github/workflows/snyk.yml
 
