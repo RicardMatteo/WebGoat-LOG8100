@@ -1,0 +1,6 @@
+- name: Deploy WebGoat namespace and resources
+  hosts: localhost
+  tasks:
+    - name: Include WebGoat role
+      include_role:
+        name: webgoat

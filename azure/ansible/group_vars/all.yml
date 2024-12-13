@@ -1,0 +1,13 @@
+kubeconfig_path: "./kubeconfig"
+webgoat:
+  replicas: 2
+  image: "webgoat/webgoat"
+  namespace: "webgoat"
+
+postgres:
+  replicas: 1
+  image: "postgres"
+  namespace: "webgoat"
+
+monitoring:
+  namespace: "monitoring"
