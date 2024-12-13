@@ -1,0 +1,20 @@
+- name: Create WebGoat namespace
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: webgoat
+
+- name: Deploy WebGoat
+  k8s:
+    state: present
+    namespace: webgoat
+    definition: "{{ lookup('file', 'templates/webgoat_deployment.yml') }}"
+
+- name: Deploy PostgreSQL
+  k8s:
+    state: present
+    namespace: webgoat
+    definition: "{{ lookup('file', 'templates/postgres_deployment.yml') }}"

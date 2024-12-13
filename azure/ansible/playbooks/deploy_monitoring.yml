@@ -1,0 +1,6 @@
+- name: Deploy Monitoring namespace and resources
+  hosts: localhost
+  tasks:
+    - name: Include Monitoring role
+      include_role:
+        name: monitoring

@@ -1,0 +1,35 @@
+name: Deploy WebGoat to AKS
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Set up kubeconfig
+      - name: Set up kubeconfig
+        run: |
+          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > ./kubeconfig
+          export KUBECONFIG=./kubeconfig
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.5
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
+
+      - name: Set up Kubernetes
+        run: az aks get-credentials --resource-group aks-webgoat-rg --name webgoat-aks-cluster
+
+      - name: Deploy Kubernetes manifests
+        run: kubectl apply -f k8s/
