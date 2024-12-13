@@ -10,20 +10,15 @@ on:
 jobs:
     call_trivy:
         uses: ./.github/workflows/trivy.yml
-        secrets: inherit
         
     call_docker_scout:
       uses: ./.github/workflows/docker_scout.yml
-      secrets: inherit
 
     call_discord_alert:
       uses: ./.github/workflows/discord-alert.yml
-      secrets: inherit
 
-    call_docker_publish:
-      uses: ./.github/workflows/docker_publish.yml
-      secrets: inherit
-      needs:
-        - call_trivy
-        - call_docker_scout
-        - call_discord_alert
+    call_snyk:
+      uses: ./.github/workflows/snyk.yml
+
+    call_zap:
+      uses: ./.github/workflows/zap.yml
