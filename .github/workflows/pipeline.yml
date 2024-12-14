@@ -1,0 +1,19 @@
+name: Pipeline CI/CD
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+
+    call_pipeline-CI:
+      uses: ./.github/workflows/pipelineCI.yml
+      secrets: inherit
+
+    call_pipeline-CD:
+      uses: ./.github/workflows/pipelineCD.yml
+      secrets: inherit
+      needs: call_pipeline-CI
