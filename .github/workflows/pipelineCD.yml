@@ -15,6 +15,6 @@ jobs:
     #   secrets: inherit
 
     call_ansible:
-      uses: ./.github/workflows/trivy.yml
+      uses: ./.github/workflows/ansible.yml
       secrets: inherit
       # needs: call_terraform
