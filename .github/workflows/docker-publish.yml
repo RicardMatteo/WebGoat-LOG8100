@@ -15,7 +15,7 @@ jobs:
       - name: Download image
         uses: ishworkh/container-image-artifact-download@v2.0.0
         with:
-          image: "${{ secrets.DOCKER_USERNAME }}/webgoat_image:latest"
+          image: "${{ secrets.DOCKER_USERNAME }}/log8100_tp3:latest"
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
