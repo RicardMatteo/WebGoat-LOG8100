@@ -16,12 +16,12 @@ jobs:
       - name: Download image
         uses: ishworkh/container-image-artifact-download@v2.0.0
         with:
-          image: "${{ secrets.DOCKER_USERNAME }}/webgoat_image:latest"
+          image: "${{ secrets.DOCKER_USERNAME }}/log8100_tp3:latest"
     
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: '${{ secrets.DOCKER_USERNAME }}/webgoat_image:latest'
+          image-ref: '${{ secrets.DOCKER_USERNAME }}/log8100_tp3:latest'
           format: 'table'
           ignore-unfixed: true
           vuln-type: 'os,library'
