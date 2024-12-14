@@ -1,18 +1,19 @@
 name: "UI-Test"
 on:
-    pull_request:
-        paths-ignore:
-            - 'LICENSE'
-            - 'docs/**'
-    push:
-        tags-ignore:
-            - 'v*'
-        paths-ignore:
-            - '.txt'
-            - '*.MD'
-            - '*.md'
-            - 'LICENSE'
-            - 'docs/**'
+    workflow_dispatch:
+    # pull_request:
+    #     paths-ignore:
+    #         - 'LICENSE'
+    #         - 'docs/**'
+    # push:
+    #     tags-ignore:
+    #         - 'v*'
+    #     paths-ignore:
+    #         - '.txt'
+    #         - '*.MD'
+    #         - '*.md'
+    #         - 'LICENSE'
+    #         - 'docs/**'
 
 jobs:
     build:
