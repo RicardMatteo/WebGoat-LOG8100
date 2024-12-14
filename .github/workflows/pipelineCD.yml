@@ -1,4 +1,4 @@
-name: Pipeline
+name: Pipeline CD
 
 on:
   workflow_call:
