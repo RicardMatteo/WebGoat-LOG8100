@@ -11,7 +11,7 @@ jobs:
     steps:
 
       - name: Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
   
       - name: Download image
         uses: ishworkh/container-image-artifact-download@v2.0.0
