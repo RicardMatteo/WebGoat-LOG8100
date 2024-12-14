@@ -22,7 +22,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: 'webgoat/webgoat_image'
+          image-ref: '${{ secrets.DOCKER_USERNAME }}/log8100_tp3:latest'
           format: 'table'
           ignore-unfixed: true
           vuln-type: 'os,library'
