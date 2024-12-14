@@ -17,6 +17,7 @@ jobs:
     call_trivy:
       needs: build_image  
       uses: ./.github/workflows/trivy.yml
+      secrets: inherit
         
     call_docker_scout:
       needs: build_image
@@ -34,3 +35,4 @@ jobs:
     call_zap:
       needs: build_image
       uses: ./.github/workflows/zap.yml
+      secrets: inherit
