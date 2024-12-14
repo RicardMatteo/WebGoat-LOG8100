@@ -8,10 +8,17 @@ on:
   workflow_dispatch:
 
 jobs:
+
+    build_image:
+      uses: ./.github/workflows/build_img.yml
+      secrets: inherit
+
     call_trivy:
-        uses: ./.github/workflows/trivy.yml
+      needs: build_image  
+      uses: ./.github/workflows/trivy.yml
         
     call_docker_scout:
+      needs: build_image
       uses: ./.github/workflows/docker_scout.yml
       secrets: inherit
 
@@ -24,4 +31,5 @@ jobs:
       secrets: inherit
 
     call_zap:
+      needs: build_image
       uses: ./.github/workflows/zap.yml
