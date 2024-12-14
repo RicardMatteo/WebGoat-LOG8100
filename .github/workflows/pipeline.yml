@@ -1,9 +1,10 @@
 name: Pipeline CI/CD
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
+      - features/pipeline
   workflow_call:
   workflow_dispatch:
 
