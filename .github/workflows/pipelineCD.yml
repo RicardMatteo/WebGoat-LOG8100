@@ -10,11 +10,11 @@ jobs:
       uses: ./.github/workflows/docker-publish.yml
       secrets: inherit
 
-    # call_terraform:
-    #   uses: ./.github/workflows/terraform.yml
-    #   secrets: inherit
+    call_terraform:
+      uses: ./.github/workflows/terraform.yml
+      secrets: inherit
 
     call_ansible:
       uses: ./.github/workflows/ansible.yml
       secrets: inherit
-      # needs: call_terraform
+      needs: call_terraform
