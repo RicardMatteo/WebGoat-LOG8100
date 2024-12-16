@@ -30,6 +30,7 @@ jobs:
           command: cves,recommendations
           ignore-unchanged: true
           only-fixed: true
+          exit-on: vulnerability, policy
 
       - name: Send Discord alert
         if: failure() 
