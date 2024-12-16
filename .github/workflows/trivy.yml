@@ -30,3 +30,12 @@ jobs:
           TRIVY_DB_REPOSITORY: 'aquasec/trivy-db:2'
           TRIVY_JAVA_DB_REPOSITORY: 'aquasec/trivy-java-db:1'
           TRIVY_TIMEOUT: '20m'
+
+      - name: Send Discord alert
+        if: failure() 
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content": "❌ Le workflow GitHub a échoué sur la branche **${{ github.ref_name }}** au job **${{ github.job }}**. Consultez les logs : ${{ github.run_url }}"}' \
+               $WEBHOOK_URL
