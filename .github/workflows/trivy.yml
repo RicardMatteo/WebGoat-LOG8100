@@ -25,6 +25,7 @@ jobs:
           format: 'table'
           ignore-unfixed: true
           vuln-type: 'os,library'
+          exit-code: 1
           severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
         env:
           TRIVY_DB_REPOSITORY: 'aquasec/trivy-db:2'
