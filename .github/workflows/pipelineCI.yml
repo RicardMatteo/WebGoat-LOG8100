@@ -1,10 +1,11 @@
-name: Pipeline
+name: Pipeline CI
 
 on:
   # push:
   #   branches:
   #     - main
   #     - feature/pipline
+  workflow_call:
   workflow_dispatch:
 
 jobs:
@@ -16,14 +17,11 @@ jobs:
     call_trivy:
       needs: build_image  
       uses: ./.github/workflows/trivy.yml
+      secrets: inherit
         
     call_docker_scout:
       needs: build_image
       uses: ./.github/workflows/docker_scout.yml
-      secrets: inherit
-
-    call_discort-alert:
-      uses: ./.github/workflows/discort-alert.yml
       secrets: inherit
 
     call_snyk:
@@ -33,3 +31,4 @@ jobs:
     call_zap:
       needs: build_image
       uses: ./.github/workflows/zap.yml
+      secrets: inherit

@@ -11,22 +11,32 @@ jobs:
     steps:
 
       - name: Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
   
       - name: Download image
         uses: ishworkh/container-image-artifact-download@v2.0.0
         with:
-          image: "webgoat/webgoat_image"
+          image: "${{ secrets.DOCKER_USERNAME }}/log8100_tp3:latest"
     
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: 'webgoat/webgoat_image'
+          image-ref: '${{ secrets.DOCKER_USERNAME }}/log8100_tp3:latest'
           format: 'table'
           ignore-unfixed: true
           vuln-type: 'os,library'
+          exit-code: 1
           severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
         env:
           TRIVY_DB_REPOSITORY: 'aquasec/trivy-db:2'
           TRIVY_JAVA_DB_REPOSITORY: 'aquasec/trivy-java-db:1'
           TRIVY_TIMEOUT: '20m'
+
+      - name: Send Discord alert
+        if: failure() 
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content": "❌ Le workflow GitHub a échoué sur la branche **${{ github.ref_name }}** au job **${{ github.job }}**. Consultez les logs : ${{ github.run_url }}"}' \
+               $WEBHOOK_URL

@@ -16,7 +16,7 @@ jobs:
       - name: Download image
         uses: ishworkh/container-image-artifact-download@v2.0.0
         with:
-          image: "webgoat/webgoat_image"
+          image: "${{ secrets.DOCKER_USERNAME }}/log8100_tp3:latest"
 
       - name: Set up custom hosts
         run: echo "127.0.0.1 www.webgoat.local www.webwolf.local" | sudo tee -a /etc/hosts
@@ -28,7 +28,7 @@ jobs:
             -p 9090:9090 \
             -e WEBGOAT_HOST=www.webgoat.local \
             -e WEBWOLF_HOST=www.webwolf.local \
-            webgoat/webgoat_image
+            ${{ secrets.DOCKER_USERNAME }}/log8100_tp3:latest
         
       - name: Change wait-for-it permissions
         run: chmod +x wait-for-it.sh
@@ -43,12 +43,14 @@ jobs:
         uses: zaproxy/action-full-scan@v0.12.0
         with:
           target: "http://www.webgoat.local:8080/WebGoat"
+          fail_action: true
           artifact_name: "zap_results_8080"
 
       - name: ZAP Scan on WebWolf (port 9090)
         uses: zaproxy/action-full-scan@v0.12.0
         with:
           target: "http://www.webwolf.local:9090/WebWolf"
+          fail_action: true
           artifact_name: "zap_results_9090"
           
       - name: Upload ZAP results
@@ -56,3 +58,12 @@ jobs:
         with:
           name: zap_results
           path: report_html.html
+
+      - name: Send Discord alert
+        if: failure() 
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content": "❌ Le workflow GitHub a échoué sur la branche **${{ github.ref_name }}** au job **${{ github.job }}**. Consultez les logs : ${{ github.run_url }}"}' \
+               $WEBHOOK_URL

@@ -12,7 +12,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run tests
-        continue-on-error: true 
         run: |
           echo "Running tests..."
           # Simule un échec pour tester les alertes
