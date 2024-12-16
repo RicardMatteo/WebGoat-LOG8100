@@ -19,3 +19,12 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: snyk.sarif
+          
+      - name: Send Discord alert
+        if: failure() 
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content": "❌ Le workflow GitHub a échoué sur la branche **${{ github.ref_name }}** au job **${{ github.job }}**. Consultez les logs : ${{ github.run_url }}"}' \
+               $WEBHOOK_URL
