@@ -7,20 +7,22 @@
         name: "{{ monitoring.namespace }}"
     kubeconfig: "{{ kubeconfig_path }}"
 
-- name: Deploy Prometheus
-  kubernetes.core.k8s:
+- name: Install helm
+  community.kubernetes.helm:
+    name: helm
+    version: 3.6.3
     state: present
-    definition: "{{ lookup('template', '../templates/prometheus_deployment.yml') }}"
     kubeconfig: "{{ kubeconfig_path }}"
+    repository_url: https://charts.helm.sh/stable
 
-- name: Deploy Grafana
-  kubernetes.core.k8s:
-    state: present
-    definition: "{{ lookup('template', '../templates/grafana_deployment.yml') }}"
-    kubeconfig: "{{ kubeconfig_path }}"
+- name: Add Prometheus Helm Repository
+  command: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
-- name: Deploy AlertManager
-  kubernetes.core.k8s:
-    state: present
-    definition: "{{ lookup('template', '../templates/alertmanager_deployment.yml') }}"
-    kubeconfig: "{{ kubeconfig_path }}"
+- name: Update Helm Repositories
+  command: helm repo update
+
+- name: Deploy Prometheus Stack with Helm
+  command: |
+    helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+     --namespace monitoring \
+     --values ../templates/prometheus_config.yml

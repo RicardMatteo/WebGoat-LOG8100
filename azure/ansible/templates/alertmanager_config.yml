@@ -8,9 +8,8 @@ data:
     global:
       resolve_timeout: 5m
     route:
-      group_by: ['alertname']
-      receiver: 'discord'
+      receiver: 'discord-webhook'
     receivers:
-      - name: 'discord'
-        webhook_configs:
-          - url: '<DISCORD_WEBHOOK_URL>'
+    - name: 'discord-webhook'
+      webhook_configs:
+      - url: "$(WEBHOOK_URL)"
