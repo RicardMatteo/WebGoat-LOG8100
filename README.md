@@ -16,13 +16,11 @@ Dans le cas où une vulnérabilité est détectée, une erreur est levée, une a
 
 Une fois la pipeline CI exécutée sans erreur la pipeline CD se charge de publier l'image docker sur Docker Hub et de déployer le cluster kubernetes avec Terraform puis Ansible.
 
-------
+---
 
 ## Cluster Kubernetes
 
 Détail de la configuration et des fonctionnalités du cluster Kubernetes hébergeant l'application. Ce cluster a été conçu pour garantir une gestion sécurisée, surveillée et optimisée des ressources tout en automatisant les déploiements grâce au pipeline CI/CD.
-
----
 
 ### Architecture
 
@@ -38,8 +36,6 @@ Le cluster est structuré autour des namespaces suivants :
     - Connecté à Prometheus pour envoyer des alertes aux développeurs.
 
 - **kube-system** : Namespace standard de Kubernetes pour les composants internes du cluster.
-
----
 
 ### Surveillance et Monitoring
 
@@ -58,8 +54,6 @@ Le cluster est structuré autour des namespaces suivants :
     - Surveille l'état des objets Kubernetes, tels que les pods, les services et les déploiements.  
     - Les données sont utilisées par Prometheus pour enrichir les métriques.
 
----
-
 ### Alertes
 
 - **Prometheus Alertmanager** : Les alertes sont configurées pour signaler :  
@@ -75,15 +69,11 @@ Le cluster est structuré autour des namespaces suivants :
         - Les détails de l'incident.  
         - Les actions recommandées.
 
----
-
 ### Gestion des Ressources et des Coûts
 
 Pour éviter une consommation excessive des ressources, des limites et des quotas sont définis dans les manifests Kubernetes :  
 - **Quotas CPU et mémoire** : Appliqués aux pods dans le namespace `webgoat`.  
 - **Restrictions sur les ressources** : Empêchent les pods d'utiliser plus de ressources que nécessaire.
-
----
 
 ### Résumé des Outils et Technologies
 
@@ -93,3 +83,5 @@ Pour éviter une consommation excessive des ressources, des limites et des quota
 **Helm** : Gestion des packages Kubernetes (par ex. Prometheus-Operator).
 **Discord** : Notifications d'alerte via webhook.
 **Terraform** : Déploiement automatisé de l'infrastructure (inclus dans le pipeline CI/CD).
+
+---
