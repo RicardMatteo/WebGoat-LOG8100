@@ -3,5 +3,5 @@
 ## Sommaire
 
 - [Qu'est ce que Webgoat ?](Webgoat.md)
-- [Pipeline](Pipeline.md)
-- [Cluster Kubernetes](Cluster.md)
+- [La pipeline](Pipeline.md)
+- [Le cluster Kubernetes](Cluster.md)
