@@ -4,43 +4,41 @@ on:
     workflow_dispatch:
     workflow_call:
     push:
-      branches:
-        - features/terraform-k8s
+        branches:
+            - features/terraform-k8s
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+    deploy:
+        runs-on: ubuntu-latest
 
-    steps:
-    
-      - name: Checkout repository
-        uses: actions/checkout@v3
-  
-      - name: Set up Python virtual environment
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-          python3 -m pip install --upgrade pip
-          python3 -m pip install kubernetes ansible[kubernetes]
-  
-      - name: Check Python environment
-        run: |
-          source venv/bin/activate
-          python3 -m pip list
-          python3 -m pip show kubernetes ansible
-  
-      - name: Set up kubeconfig
-        run: |
-          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > ./kubeconfig
-          mkdir -p ~/.kube
-          cp ./kubeconfig ~/.kube/config
-          export KUBECONFIG=./kubeconfig
-          kubectl get nodes
-  
-      - name: Debug kubeconfig
-        run: cat ~/.kube/config
-          
-  
-      - name: Run Ansible Playbook
-        run: |
-          ansible-playbook -i azure/ansible/inventory/localhost azure/ansible/playbooks/deploy.yml -e @azure/ansible/group_vars/all.yml -e ansible_python_interpreter=$(pwd)/venv/bin/python3
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Set up Python virtual environment
+              run: |
+                  python3 -m venv venv
+                  source venv/bin/activate
+                  python3 -m pip install --upgrade pip
+                  python3 -m pip install kubernetes ansible[kubernetes]
+
+            - name: Check Python environment
+              run: |
+                  source venv/bin/activate
+                  python3 -m pip list
+                  python3 -m pip show kubernetes ansible
+
+            - name: Set up kubeconfig
+              run: |
+                  echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > ./kubeconfig
+                  mkdir -p ~/.kube
+                  cp ./kubeconfig ~/.kube/config
+                  export KUBECONFIG=./kubeconfig
+                  kubectl get nodes
+
+            - name: Debug kubeconfig
+              run: cat ~/.kube/config
+
+            - name: Run Ansible Playbook
+              run: |
+                  ansible-playbook -i ansible/inventory/localhost ansible/playbooks/deploy.yml -e @ansible/group_vars/all.yml -e ansible_python_interpreter=$(pwd)/venv/bin/python3
