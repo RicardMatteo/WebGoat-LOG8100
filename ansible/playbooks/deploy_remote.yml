@@ -1,0 +1,8 @@
+- name: Deploy Kubernetes Infrastructure
+  hosts: remote
+  tasks:
+      - name: Deploy Application Namespace and Resources
+        include_tasks: setup_application_remote.yml
+
+      - name: Deploy Monitoring Namespace and Resources
+        include_tasks: setup_monitoring_remote.yml

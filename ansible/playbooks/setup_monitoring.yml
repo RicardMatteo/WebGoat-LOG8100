@@ -1,0 +1,28 @@
+- name: Create monitoring namespace
+  kubernetes.core.k8s:
+      definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+              name: "{{ monitoring.namespace }}"
+      kubeconfig: "{{ kubeconfig_path }}"
+
+- name: Install helm
+  community.kubernetes.helm:
+      name: helm
+      version: 3.6.3
+      state: present
+      kubeconfig: "{{ kubeconfig_path }}"
+      repository_url: https://charts.helm.sh/stable
+
+- name: Add Prometheus Helm Repository
+  command: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+- name: Update Helm Repositories
+  command: helm repo update
+
+- name: Deploy Prometheus Stack with Helm
+  command: |
+      helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+       --namespace monitoring \
+       --values ../templates/prometheus_config.yml
