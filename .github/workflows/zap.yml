@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 jobs:
-  zap_scan:
+  zap:
     runs-on: ubuntu-latest
     name: Scan the web application
     steps:
