@@ -1,0 +1,63 @@
+prometheus:
+  service:
+    type: LoadBalancer
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    scrapeInterval: 15s  
+    evaluationInterval: 15s 
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets: ['alertmanager.monitoring.svc.cluster.local:9093']
+
+    scrape_configs:
+      - job_name: 'webgoat'
+        kubernetes_sd_configs:
+          - api_server: 'https://kubernetes.default.svc'
+            role: 'service'
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            target_label: 'service'
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: 'namespace'
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: 'pod_name'
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            target_label: 'endpoint_port'
+
+        metrics_path: '/actuator/prometheus'  
+        params:
+          format: ['prometheus']
+
+        static_configs:
+          - targets: ['webgoat-service:prometheus-metrics'] 
+
+      - job_name: 'kube-state-metrics'
+        kubernetes_sd_configs:
+          - role: service
+            api_server: 'https://kubernetes.default.svc'
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name]
+            target_label: 'service'
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: 'namespace'
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: 'pod_name'
+          - source_labels: [__meta_kubernetes_endpoint_port_name]
+            target_label: 'endpoint_port'
+
+        metrics_path: '/metrics'
+        params:
+          format: ['prometheus']
+        static_configs:
+          - targets: ['kube-state-metrics.monitoring.svc.cluster.local:8080']
+
+      - job_name: 'alertmanager'
+        static_configs:
+          - targets: ['alertmanager.monitoring.svc.cluster.local:9093']
+
+grafana:
+  service:
+    type: LoadBalancer 
+

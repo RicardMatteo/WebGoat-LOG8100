@@ -1,0 +1,140 @@
+---
+- name: Deploy Postgres and Webgoat applications to Kubernetes
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    # Create the webgoat namespace if not already created
+    - name: Ensure webgoat namespace exists
+      kubernetes.core.k8s:
+        name: webgoat
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    # Create the Postgres Deployment
+    - name: Create Postgres Deployment
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: postgres-deployment
+            namespace: webgoat
+          spec:
+            replicas: 2
+            selector:
+              matchLabels:
+                app: postgres
+            template:
+              metadata:
+                labels:
+                  app: postgres
+              spec:
+                containers:
+                  - name: postgres
+                    image: postgres:latest
+                    ports:
+                      - containerPort: 5432
+                    env:
+                    - name: POSTGRES_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                          name: postgres-secret
+                          key: POSTGRES_PASSWORD
+
+    # Create a Postgres Service
+    - name: Expose Postgres Service
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: postgres-service
+            namespace: webgoat
+          spec:
+            selector:
+              app: postgres
+            ports:
+              - name : postgres-service-port
+                protocol: TCP
+                port: 5432
+                targetPort: 5432
+            type: ClusterIP
+
+    # Create the Webgoat Deployment
+    - name: Create Webgoat Deployment
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: webgoat-deployment
+            namespace: webgoat
+          spec:
+            replicas: 2
+            selector:
+              matchLabels:
+                app: webgoat
+            template:
+              metadata:
+                labels:
+                  app: webgoat
+              spec:
+                containers:
+                  - name: webgoat
+                    image: webgoat/webgoat:latest
+                    ports:
+                      - containerPort: 8080
+                  - name: prometheus-sidecar
+                    image: prom/prometheus:latest
+                    ports:
+                      - containerPort: 8081
+                    args:
+                      - "--web.listen-address=:8081"
+                      - "--prometheus.path=/actuator/prometheus"
+                      - "--prometheus.target=webgoat-service:8080"
+
+    # Create a Webgoat Service
+    - name: Expose Webgoat Service
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: webgoat-service
+            namespace: webgoat
+          spec:
+            selector:
+              app: webgoat
+            ports:
+              - name: webgoat-service-port
+                protocol: TCP
+                port: 8080
+                targetPort: 8080
+            type: LoadBalancer
+    
+    # Create a Service Monitor for Webgoat in Prometheus
+    - name: Create Service Monitor for Webgoat
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: monitoring.coreos.com/v1
+          kind: ServiceMonitor
+          metadata:
+            name: webgoat-service-monitor
+            namespace: webgoat
+          spec:
+            selector:
+              matchLabels:
+                app: webgoat
+            ports:
+              - name: prometheus-metrics
+                port: 8081
+            type: ClusterIP
+            endpoints:
+              - targetPort: 8081
+              
