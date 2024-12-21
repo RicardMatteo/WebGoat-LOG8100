@@ -7,7 +7,7 @@ Détail de la configuration et des fonctionnalités du cluster Kubernetes héber
 Le cluster est structuré autour des namespaces suivants :  
 
 - **webgoat** : 
-    - Application déployée dans un pod dédié.  
+    - Application déployée dans un pod dédié. Et répliqué pour garantir que l'application reste disponible même si une instance crash. 
     - Service exposé via un LoadBalancer ou un Ingress pour l'accès externe.  
 
 - **monitoring** : 
@@ -16,6 +16,11 @@ Le cluster est structuré autour des namespaces suivants :
     - Connecté à Prometheus pour envoyer des alertes aux développeurs.
 
 - **kube-system** : Namespace standard de Kubernetes pour les composants internes du cluster.
+
+## Réseau 
+
+Des groupes de sécurité sont mis en place pour agir comme des firewalls et bloque tout le trafic non autorisé. 
+Seul le trafic indispensable au fonctionnement de WebGoat et du monitoring est autorisée.
 
 ## Surveillance et Monitoring
 
