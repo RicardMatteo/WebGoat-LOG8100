@@ -50,19 +50,16 @@ Confirmez en tapant "yes" lorsque demandé.
 
 ### 3. Récupérer le kubeconfig nécessaire au lancement de Ansible
 ```bash
-az aks get-credentials --resource-group [insérer le groupe] --name [insérer le nom du cluster] --file  ./playbooks/kubeconfig
+az aks get-credentials --resource-group <ressource_group> --name <cluster_name> --file ./playbooks/kubeconfig
 ```
 
 ### 4. Configurer le déploiement via Ansible
 
 Selon vos configurations : 
 ```bash
-ansible-playbook -i azure/ansible/inventory/vm azure/ansible/playbooks/deploy.yml -e @azure/ansible/group_vars/all.yml
+ansible-playbook -i ansible/inventory/vm ansible/playbooks/deploy.yml -e @azure/ansible/group_vars/all.yml
 ```
-Si vous utilisez un environnement virtuel local python, il faut l'ajouter comme argument supplémentaire :
-```bash
-ansible-playbook -i azure/ansible/inventory/vm azure/ansible/playbooks/deploy.yml -e @azure/ansible/group_vars/all.yml -e "ansible_python_interpreter=../../../venv/bin/python"
-```
+Si vous utilisez un environnement virtuel local python, il faut l'ajouter comme argument supplémentaire ``"-e ansible_python_interpreter=<path to python bin in venv>``
 
 ### 5. Vérification du bon fonctionnement
 
