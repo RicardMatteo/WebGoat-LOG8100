@@ -62,9 +62,9 @@ Pour éviter une consommation excessive des ressources, des limites et des quota
 
 ## Résumé des Outils et Technologies
 
-**Kubernetes** : Orchestration des conteneurs et gestion des déploiements.
-**Prometheus** : Collecte des métriques et configuration des alertes.
-**Grafana** : Visualisation des données de monitoring.
-**Helm** : Gestion des packages Kubernetes (par ex. Prometheus-Operator).
-**Discord** : Notifications d'alerte via webhook.
-**Terraform** : Déploiement automatisé de l'infrastructure (inclus dans le pipeline CI/CD).
+- **Kubernetes** : Orchestration des conteneurs et gestion des déploiements.
+- **Prometheus** : Collecte des métriques et configuration des alertes.
+- **Grafana** : Visualisation des données de monitoring.
+- **Helm** : Gestion des packages Kubernetes (par ex. Prometheus-Operator).
+- **Discord** : Notifications d'alerte via webhook.
+- **Terraform** : Déploiement automatisé de l'infrastructure (inclus dans le pipeline CI/CD).
