@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 jobs:
-  build:
+  docker_scout:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +30,8 @@ jobs:
           command: cves,recommendations
           ignore-unchanged: true
           only-fixed: true
-          exit-on: vulnerability, policy
+          exit-code: 1
+          #exit-on: vulnerability, policy
 
       - name: Send Discord alert
         if: failure() 
