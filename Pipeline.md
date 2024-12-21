@@ -2,7 +2,7 @@
 
 ## Pipeline CI
 
-La pipeline CI comporte les étapes suivantes :
+La pipeline CI est lancé à chaque push dans la branche main et pipeline, elle comporte les étapes suivantes :
 - Scan statique du code avec Snyk
 - Scan de l'image docker avec Docker Scout et Trivy
 - Scan de l'application avec OWASP Zap
