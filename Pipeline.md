@@ -9,6 +9,7 @@ La pipeline CI comporte les étapes suivantes :
 
 Docker Scout, Trivy et OWASP Zap necessite l'image docker. Ainsi avant ces étapes, l'image docker est construite et mise à disposition pour les étapes suivantes. Les étapes utilisant Docker Scout, Trivy et OWASP Zap nécessitent donc l'étape de la création d'image. 
 Dans le cas où une vulnérabilité est détectée, une erreur est levée, une alerte discord est envoyée et nous ne pouvons commencer le déploiement.
+En parallèle, et en plus du SAST Snyk, SonarCloud analyse le code à chaque push dans la branche main et avertit par mail des vulnérabilités introduites dans le push effectué. 
 
 ## Pipeline CD
 
