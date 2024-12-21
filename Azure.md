@@ -52,6 +52,22 @@ Confirmez en tapant "yes" lorsque demandé.
 ```bash
 az aks get-credentials --resource-group [insérer le groupe] --name [insérer le nom du cluster] --file  ./playbooks/kubeconfig
 ```
+
+### 4. Configurer le déploiement via Ansible
+
+Selon vos configurations : 
+```bash
+ansible-playbook -i azure/ansible/inventory/vm azure/ansible/playbooks/deploy.yml -e @azure/ansible/group_vars/all.yml
+```
+Si vous utilisez un environnement virtuel local python, il faut l'ajouter comme argument supplémentaire :
+```bash
+ansible-playbook -i azure/ansible/inventory/vm azure/ansible/playbooks/deploy.yml -e @azure/ansible/group_vars/all.yml -e "ansible_python_interpreter=../../../venv/bin/python"
+```
+
+### 5. Vérification du bon fonctionnement
+
+L'application Webgoat est alors accessible à l'adresse suivante : http://<EXTERNAL-IP>:9090/WebGoat.
+
 ## Notes 
 
 On a réussi à déployer l'infrastructure sur Azure comme le montre l'action github [ici](https://github.com/RicardMatteo/WebGoat-LOG8100/actions/runs/12323630687/job/34399700211). Malheureusement, nous avons épuisé tous nos crédit et avons du changer la manière d'héberger l'infrastructure.
